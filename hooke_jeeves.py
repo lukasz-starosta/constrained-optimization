@@ -7,7 +7,7 @@ def norm(v):
     return math.sqrt(v[0] ** 2 + v[1] ** 2)
 
 
-dim = 4
+dim = 2
 
 
 def hooke_jeeves(fun, u, h, eps_step, eps_abs, max_iterations):
@@ -34,7 +34,7 @@ def hooke_jeeves(fun, u, h, eps_step, eps_abs, max_iterations):
         # Exploratory moves
         u0 = u
         min0 = minimum
-        du = np.array([0, 0, 0, 0])
+        du = np.array([0, 0])
 
         # See if any of the dimensions
         # Change each entry by +- h
@@ -115,4 +115,4 @@ def hooke_jeeves(fun, u, h, eps_step, eps_abs, max_iterations):
 
     # Zero vector - approx, no value
     print('Nie znaleziono minimum.')
-    return [0, 0, 0, 0], np.nan
+    return [0, 0], np.nan

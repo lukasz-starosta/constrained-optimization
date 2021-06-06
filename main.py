@@ -28,10 +28,10 @@ def calculate():
     fig.clear()
 
     # calculate plot points
-    # x_values = np.arange(-max_size, max_size, 1)
-    # y_values = np.arange(-max_size, max_size, 1)
-    # X, Y = np.meshgrid(x_values, y_values)
-    # Z = eval_math_fn_at(fun, (X, Y))
+    x_values = np.arange(-max_size, max_size, 1)
+    y_values = np.arange(-max_size, max_size, 1)
+    X, Y = np.meshgrid(x_values, y_values)
+    Z = eval_math_fn_at(fun, (X, Y))
 
     # 3d visualization
     # ax = fig.gca(projection='3d')
@@ -40,23 +40,20 @@ def calculate():
     # ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
     # 2d contour visualization
-    # ax = fig.gca()
-    # CS = ax.contour(X, Y, Z)
-    # ax.clabel(CS, inline=True)
+    ax = fig.gca()
+    CS = ax.contour(X, Y, Z)
+    ax.clabel(CS, inline=True)
+
+    fun += ' - log(9 - x**2 - y**2)'
 
     f = lambda point: eval_math_fn_at(fun, point)
-    # point, value = hooke_jeeves(fun=f, u=initial_approx, h=init_step, eps_step=eps_step, eps_abs=eps_abs,
-    #                             max_iterations=iter_c)
+    point, value = hooke_jeeves(fun=f, u=initial_approx, h=init_step, eps_step=eps_step, eps_abs=eps_abs,
+                                max_iterations=iter_c)
 
-    # print(f'Wynik: punkt: {point}, wartość: {value}')
-
-    ineq_constraint1 = lambda x : x[0] + x[1] - 3
-    ineq_constraint2 = lambda x : x[0] + 2*x[1] - 4
+    print(f'Wynik: punkt: {point}, wartość: {value}')
 
     cb = lambda x: print(f'Scipy: punkt: {x}')
-    scipy_result = optimize.minimize(f, initial_approx, callback=cb, options={'maxiter': iter_c, 'disp': True}, method='SLSQP',
-                                     constraints=[{'type':'ineq', 'fun': ineq_constraint1}, {'type': 'ineq', 'fun': ineq_constraint2}], bounds=[(0, np.inf), (0, np.inf)]
-                                     )
+    scipy_result = optimize.minimize(f, initial_approx, method='SLSQP', callback=cb, options={'maxiter': iter_c, 'disp': True})
     if scipy_result.success:
         print(
             f'Wynik scipy.optimize.minimize: punkt: {scipy_result.x}, wartość: {scipy_result.fun}, ilość iteracji: {scipy_result.nit}')
@@ -65,7 +62,7 @@ def calculate():
 
     fig.canvas.mpl_connect('button_press_event', handle_click)
 
-    # mark_point(ax, point)
+    mark_point(ax, point)
     canvas.draw()
 
 
@@ -90,10 +87,10 @@ iteration_count_label = tk.Label(master, text='Maksymalna ilość iteracji')
 
 # entry list
 fn = tk.Entry(master)
-fn.insert(index=tk.END, string='2*x + y')
+fn.insert(index=tk.END, string='x')
 
 initial_approximation = tk.Entry(master)
-initial_approximation.insert(index=tk.END, string='[0, 9]')
+initial_approximation.insert(index=tk.END, string='[0, 0]')
 
 initial_step = tk.Entry(master)
 initial_step.insert(index=tk.END, string='1')
@@ -105,7 +102,7 @@ epsilon_abs = tk.Entry(master)
 epsilon_abs.insert(index=tk.END, string='0.1')
 
 iteration_count = tk.Entry(master)
-iteration_count.insert(index=tk.END, string='100')
+iteration_count.insert(index=tk.END, string='10')
 
 # place labels and entry in main window
 fn_input_label.pack()

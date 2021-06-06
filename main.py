@@ -44,7 +44,7 @@ def calculate():
     CS = ax.contour(X, Y, Z)
     ax.clabel(CS, inline=True)
 
-    fun += ' - log(9 - x**2 - y**2)'
+    fun += ' - log(9 - x**2 - y**2)' if False else ' - log(2 - x) - log(2 + x) - log (2 - y) - log (2 + y)'
 
     f = lambda point: eval_math_fn_at(fun, point)
     point, value = hooke_jeeves(fun=f, u=initial_approx, h=init_step, eps_step=eps_step, eps_abs=eps_abs,

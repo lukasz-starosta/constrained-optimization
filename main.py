@@ -44,7 +44,7 @@ def calculate():
     CS = ax.contour(X, Y, Z)
     ax.clabel(CS, inline=True)
 
-    fun += ' - log(9 - x**2 - y**2)' if False else ' - log(2 - x) - log(2 + x) - log (2 - y) - log (2 + y)'
+    fun += ' - log(9 - x**2 - y**2)' if switch_variable.get() == 'circle' else ' - log(2 - x) - log(2 + x) - log (2 - y) - log (2 + y)'
 
     f = lambda point: eval_math_fn_at(fun, point)
     point, value = hooke_jeeves(fun=f, u=initial_approx, h=init_step, eps_step=eps_step, eps_abs=eps_abs,
@@ -122,6 +122,18 @@ epsilon_abs.pack()
 
 iteration_count_label.pack()
 iteration_count.pack()
+
+switch_frame = tk.Frame(master)
+switch_frame.pack(pady=10)
+
+switch_variable = tk.StringVar(value="square")
+square_button = tk.Radiobutton(switch_frame, text="Ograniczenie kwadratowe", variable=switch_variable,
+                            indicatoron=False, value="square", width=30)
+circle_button = tk.Radiobutton(switch_frame, text="Ograniczenie okrągłe", variable=switch_variable,
+                            indicatoron=False, value="circle", width=30)
+
+square_button.pack(side="left")
+circle_button.pack(side="left")
 
 # method choice buttons
 buttons = tk.Frame(master)

@@ -23,6 +23,7 @@ def calculate():
     eps_step = float(epsilon_step.get())
     eps_abs = float(epsilon_abs.get())
     iter_c = int(iteration_count.get())
+    penalty_coeff = float(penalty_coeff_input.get())
 
     # Clear the figure
     fig.clear()
@@ -44,7 +45,9 @@ def calculate():
     CS = ax.contour(X, Y, Z)
     ax.clabel(CS, inline=True)
 
-    fun += ' - log(9 - x**2 - y**2)' if switch_variable.get() == 'circle' else ' - log(2 - x) - log(2 + x) - log (2 - y) - log (2 + y)'
+    print(penalty_coeff)
+    fun += f' - {penalty_coeff} * log(9 - x**2 - y**2)' if switch_variable.get() == 'circle' else \
+        f' - {penalty_coeff} * log(5 - x) - log(5 + x) - log (5 - y) - log (5 + y)'
 
     f = lambda point: eval_math_fn_at(fun, point)
     point, value = hooke_jeeves(fun=f, u=initial_approx, h=init_step, eps_step=eps_step, eps_abs=eps_abs,
@@ -53,7 +56,8 @@ def calculate():
     print(f'Wynik: punkt: {point}, wartość: {value}')
 
     cb = lambda x: print(f'Scipy: punkt: {x}')
-    scipy_result = optimize.minimize(f, initial_approx, method='SLSQP', callback=cb, options={'maxiter': iter_c, 'disp': True})
+    scipy_result = optimize.minimize(f, initial_approx, method='SLSQP', callback=cb,
+                                     options={'maxiter': iter_c, 'disp': True})
     if scipy_result.success:
         print(
             f'Wynik scipy.optimize.minimize: punkt: {scipy_result.x}, wartość: {scipy_result.fun}, ilość iteracji: {scipy_result.nit}')
@@ -84,6 +88,7 @@ initial_step_label = tk.Label(master, text='Początkowa długość kroku')
 epsilon_step_label = tk.Label(master, text='Minimalna długość kroku')
 epsilon_abs_label = tk.Label(master, text='Dokładność')
 iteration_count_label = tk.Label(master, text='Maksymalna ilość iteracji')
+penalty_coeff_label = tk.Label(master, text='Współczynnik wielkości kary')
 
 # entry list
 fn = tk.Entry(master)
@@ -104,6 +109,9 @@ epsilon_abs.insert(index=tk.END, string='0.1')
 iteration_count = tk.Entry(master)
 iteration_count.insert(index=tk.END, string='10')
 
+penalty_coeff_input = tk.Entry(master)
+penalty_coeff_input.insert(index=tk.END, string='0.1')
+
 # place labels and entry in main window
 fn_input_label.pack()
 fn.pack()
@@ -123,14 +131,17 @@ epsilon_abs.pack()
 iteration_count_label.pack()
 iteration_count.pack()
 
+penalty_coeff_label.pack()
+penalty_coeff_input.pack()
+
 switch_frame = tk.Frame(master)
 switch_frame.pack(pady=10)
 
 switch_variable = tk.StringVar(value="square")
 square_button = tk.Radiobutton(switch_frame, text="Ograniczenie kwadratowe", variable=switch_variable,
-                            indicatoron=False, value="square", width=30)
+                               indicatoron=False, value="square", width=30)
 circle_button = tk.Radiobutton(switch_frame, text="Ograniczenie okrągłe", variable=switch_variable,
-                            indicatoron=False, value="circle", width=30)
+                               indicatoron=False, value="circle", width=30)
 
 square_button.pack(side="left")
 circle_button.pack(side="left")

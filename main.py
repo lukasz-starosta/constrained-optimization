@@ -45,7 +45,6 @@ def calculate():
     CS = ax.contour(X, Y, Z)
     ax.clabel(CS, inline=True)
 
-    print(penalty_coeff)
     fun += f' - {penalty_coeff} * log(9 - x**2 - y**2)' if switch_variable.get() == 'circle' else \
         f' - {penalty_coeff} * log(5 - x) - log(5 + x) - log (5 - y) - log (5 + y)'
 
